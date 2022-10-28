@@ -8,7 +8,7 @@ namespace AnimalShelterApi.Repository
 {
    public interface IJWTManagerRepository
     {
-        Tokens Authenticate(Users users); 
+        Tokens Authenticate(User user); 
     }
    
 }

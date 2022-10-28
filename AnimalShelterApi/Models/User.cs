@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AnimalShelterApi.Models
 {
-  public class Users
+  public class User
   {
     [Required]
     public string Name { get; set; }

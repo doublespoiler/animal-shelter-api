@@ -27,7 +27,7 @@ namespace AnimalShelterApi.Controllers
       [AllowAnonymous]
       [HttpPost]
       [Route("authenticate")]
-      public IActionResult Authenticate (Users userdata)
+      public IActionResult Authenticate (User userdata)
       {
         var token = _jWTManager.Authenticate(userdata);
         if(token == null)

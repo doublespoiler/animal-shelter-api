@@ -12,6 +12,7 @@ namespace AnimalShelterApi.Repository
 {
 	public class JWTManagerRepository : IJWTManagerRepository
 	{
+
 		Dictionary<string, string> UsersRecords = new Dictionary<string, string>
 		{
 			{"admin","admin"},
@@ -22,10 +23,10 @@ namespace AnimalShelterApi.Repository
 		{
 			this.iconfiguration = iconfiguration;
 		}
-		public Tokens Authenticate(Users users)
+		public Tokens Authenticate(User user)
 		{
       // If no user authenticated, return null
-			if (!UsersRecords.Any(x => x.Key == users.Name && x.Value == users.Password)) {
+			if (!UsersRecords.Any(x => x.Key == user.Name && x.Value == user.Password)) {
 				return null;
 			}
 			// Else we generate JSON Web Token
@@ -35,7 +36,7 @@ namespace AnimalShelterApi.Repository
 			{
 				Subject = new ClaimsIdentity(new Claim[]
 				{
-				new Claim(ClaimTypes.Name, users.Name)                    
+				new Claim(ClaimTypes.Name, user.Name)                    
 				}),
 				Expires = DateTime.UtcNow.AddMinutes(525600),
 				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey),SecurityAlgorithms.HmacSha256Signature)
