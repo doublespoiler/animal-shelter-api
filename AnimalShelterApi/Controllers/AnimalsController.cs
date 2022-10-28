@@ -21,14 +21,10 @@ namespace AnimalShelterApi.Controllers
 
       //GET api/animals
       [HttpGet]
-      public async Task<ActionResult<IEnumerable<Animal>>> Get(int? id, string? sex, int? age, string? species, string? breed, string? color, bool? isFixed, string? name, int? olderThan, int? youngerThan)
+      public async Task<ActionResult<IEnumerable<Animal>>> Get(string sex, int? age, string species, string breed, string color, bool? isFixed, string name, int? olderThan, int? youngerThan, int? branchId)
       {
         IQueryable<Animal> query = _db.Animals.AsQueryable();
 
-        if(id != null)
-        {
-          query = query.Where(a => a.Id == id);
-        }
         if(sex != null)
         {
           query = query.Where(a => a.Sex == sex);
@@ -37,7 +33,7 @@ namespace AnimalShelterApi.Controllers
         {
           query = query.Where(a => a.Age == age);
         }
-        if(species == null)
+        if(species != null)
         {
           query = query.Where(a => a.Species == species);
         }
@@ -47,7 +43,7 @@ namespace AnimalShelterApi.Controllers
         }
         if(color != null)
         {
-          query = query.Where(a => a.Color == color);
+          query = query.Where(a => a.Color.ToLower().Contains(color.ToLower()));
         }
         if(isFixed != null)
         {
@@ -55,7 +51,7 @@ namespace AnimalShelterApi.Controllers
         }
         if(name != null)
         {
-          query = query.Where(a => a.Name.Contains(name));
+          query = query.Where(a => a.Name.ToLower().Contains(name.ToLower()));
         }
         if(olderThan != null)
         {
@@ -65,8 +61,12 @@ namespace AnimalShelterApi.Controllers
         {
           query = query.Where(a => a.Age <= youngerThan);
         }
+        if(branchId != null)
+        {
+          query = query.Where(a => a.BranchId == branchId);
+        }
 
-        return await _db.Animals.ToListAsync();
+        return await query.ToListAsync();
       }
 
       // GET: api/Animals/5
@@ -128,6 +128,8 @@ namespace AnimalShelterApi.Controllers
       {
         return NotFound();
       }
+      var branch = await _db.Branches.FindAsync(animal.BranchId);
+      branch.Animals.Remove(animal);
       _db.Animals.Remove(animal);
       await _db.SaveChangesAsync();
       return NoContent();
