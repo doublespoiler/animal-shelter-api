@@ -5,21 +5,40 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AnimalShelterApi.Models;
+using Microsoft.AspNetCore.Authorization;
+using AnimalShelterApi.Repository;
 
 namespace AnimalShelterApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class BranchesController : ControllerBase
     {
         private readonly AnimalShelterContext _db;
+        private readonly IJWTManagerRepository _jWTManager;
 
-      public BranchesController(AnimalShelterContext db)
+      public BranchesController(IJWTManagerRepository jWTManager, AnimalShelterContext db)
       {
+        this._jWTManager = jWTManager;
         _db = db;
       }
 
+      [AllowAnonymous]
+      [HttpPost]
+      [Route("authenticate")]
+      public IActionResult Authenticate (Users userdata)
+      {
+        var token = _jWTManager.Authenticate(userdata);
+        if(token == null)
+        {
+          return Unauthorized();
+        }
+        return Ok(token);
+      }
+
       //GET api/branches
+      [AllowAnonymous]
       [HttpGet]
       public async Task<ActionResult<IEnumerable<Branch>>> Get(string name, string address)
       {
@@ -37,6 +56,7 @@ namespace AnimalShelterApi.Controllers
       }
 
       // GET: api/branches/5
+      [AllowAnonymous]
       [HttpGet("{id}")]
       public async Task<ActionResult<Branch>> GetBranch(int id)
       {
@@ -49,6 +69,7 @@ namespace AnimalShelterApi.Controllers
       }
 
       //GET api/branches/5/animals
+      [AllowAnonymous]
       [HttpGet("{id}/animals")]
       public async Task<ActionResult<IEnumerable<Animal>>> GetBranchAnimals(int id, string sex, int? age, string species, string breed, string color, bool? isFixed, string name, int? olderThan, int? youngerThan)
       {
@@ -161,11 +182,6 @@ namespace AnimalShelterApi.Controllers
     private bool BranchExists(int id)
     {
       return _db.Branches.Any(b => b.Id == id);
-    }
-    
-    private bool AnimalExists(int id)
-    {
-      return _db.Animals.Any(a => a.Id == id);
     }
   }
 }

@@ -5,21 +5,41 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AnimalShelterApi.Models;
+using Microsoft.AspNetCore.Authorization;
+using AnimalShelterApi.Repository;
 
 namespace AnimalShelterApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AnimalsController : ControllerBase
     {
       private readonly AnimalShelterContext _db;
+      private readonly IJWTManagerRepository _jWTManager;
+      
 
-      public AnimalsController(AnimalShelterContext db)
+      public AnimalsController(IJWTManagerRepository jWTManager, AnimalShelterContext db)
       {
+        this._jWTManager = jWTManager;
         _db = db;
       }
 
+      [AllowAnonymous]
+      [HttpPost]
+      [Route("authenticate")]
+      public IActionResult Authenticate (Users userdata)
+      {
+        var token = _jWTManager.Authenticate(userdata);
+        if(token == null)
+        {
+          return Unauthorized();
+        }
+        return Ok(token);
+      }
+
       //GET api/animals
+      [AllowAnonymous]
       [HttpGet]
       public async Task<ActionResult<IEnumerable<Animal>>> Get(string sex, int? age, string species, string breed, string color, bool? isFixed, string name, int? olderThan, int? youngerThan, int? branchId)
       {
@@ -70,6 +90,7 @@ namespace AnimalShelterApi.Controllers
       }
 
       // GET: api/Animals/5
+      [AllowAnonymous]
       [HttpGet("{id}")]
       public async Task<ActionResult<Animal>> GetAnimal(int id)
       {

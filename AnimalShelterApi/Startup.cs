@@ -15,6 +15,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using AnimalShelterApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using AnimalShelterApi.Repository;
+
+
 
 namespace AnimalShelterApi
 {
@@ -30,9 +36,31 @@ namespace AnimalShelterApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+          services.AddAuthentication(x =>
+          {
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+          }).AddJwtBearer(o => 
+          {
+            var Key = Encoding.UTF8.GetBytes(Configuration["JWT:Key"]);
+            o.SaveToken = true;
+            o.TokenValidationParameters = new TokenValidationParameters
+            {
+              ValidateIssuer = false,
+              ValidateAudience = false,
+              ValidateLifetime = true,
+              ValidateIssuerSigningKey = true,
+              ValidIssuer = Configuration["JWT:Issuer"],
+              ValidAudience = Configuration["JWT:Audience"],
+              IssuerSigningKey = new SymmetricSecurityKey(Key)
+            };
+          });
+            services.AddSingleton<IJWTManagerRepository, JWTManagerRepository>();
+
             services.AddDbContext<AnimalShelterContext>(opt => opt.UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
 
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AnimalShelterApi", Version = "v1" });
@@ -54,8 +82,8 @@ namespace AnimalShelterApi
             // app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            // app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
