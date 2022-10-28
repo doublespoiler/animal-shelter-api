@@ -106,6 +106,14 @@ namespace AnimalShelterApi.Controllers
         await _db.SaveChangesAsync();
         return CreatedAtAction("Post", new { id = branch.Id }, branch);
       }
+      [HttpPost("{id}/animals")]
+      public async Task<ActionResult<Animal>> PostAnimal(int id, Animal animal)
+      {
+        animal.BranchId = id;
+        _db.Animals.Add(animal);
+        await _db.SaveChangesAsync();
+        return CreatedAtAction("PostAnimal", new { id = animal.Id}, animal);
+      }
 
     // PUT: api/branches/5
     [HttpPut("{id}")]
@@ -152,7 +160,12 @@ namespace AnimalShelterApi.Controllers
 
     private bool BranchExists(int id)
     {
-      return _db.Branches.Any(a => a.Id == id);
+      return _db.Branches.Any(b => b.Id == id);
     }
+    
+    private bool AnimalExists(int id)
+    {
+      return _db.Animals.Any(a => a.Id == id);
     }
+  }
 }
