@@ -17,9 +17,9 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "animalshelterapi": {
+    "AnimalShelterApi": {
       "commandName": "Project",
-      "dotnetRunMessages": "true",
+      "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "api/Animals",
       "applicationUrl": "https://localhost:3001;http://localhost:3000",
