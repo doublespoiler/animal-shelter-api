@@ -13,6 +13,12 @@ namespace AnimalShelterApi.Models
     }
 
     public DbSet<Animal> Animals { get; set; }
+    public DbSet<Branch> Branches { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+      optionsBuilder.UseLazyLoadingProxies();
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -27,7 +33,8 @@ namespace AnimalShelterApi.Models
           Species = "canine",
           Breed = "pit bull mix",
           Color = "White",
-          IsFixed = true
+          IsFixed = true,
+          BranchId = 1
         },
         new Animal
         {
@@ -38,7 +45,8 @@ namespace AnimalShelterApi.Models
           Species = "canine",
           Breed = "pit bull mix",
           Color = "brown",
-          IsFixed = true
+          IsFixed = true,
+          BranchId = 1
         },
         new Animal
         {
@@ -49,7 +57,8 @@ namespace AnimalShelterApi.Models
           Species = "canine",
           Breed = "Shepherd Mix",
           Color = "Black",
-          IsFixed = true
+          IsFixed = true,
+          BranchId = 2
         },
         new Animal
         {
@@ -60,7 +69,8 @@ namespace AnimalShelterApi.Models
           Species = "feline",
           Breed = "american shorthair",
           Color = "black",
-          IsFixed = true
+          IsFixed = true,
+          BranchId = 2
         },
         new Animal
         {
@@ -71,7 +81,23 @@ namespace AnimalShelterApi.Models
           Species = "feline",
           Breed = "mixed",
           Color = "tabby",
-          IsFixed = true
+          IsFixed = true,
+          BranchId = 1
+        }
+      );
+      builder.Entity<Branch>().HasData
+      (
+        new Branch
+        {
+          Id = 1,
+          Name = "Flagstaff Humane Society",
+          Address = "1800 S. Milton Road, Flagstaff, AZ 86001"
+        },
+        new Branch
+        {
+          Id = 2,
+          Name = "Kingman Human Society",
+          Address = "2990 Andy Devine Ave, Kingman, AZ, 86401"
         }
       );
     }
