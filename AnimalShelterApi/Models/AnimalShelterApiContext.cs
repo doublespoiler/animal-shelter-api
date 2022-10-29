@@ -14,7 +14,7 @@ namespace AnimalShelterApi.Models
 
     public DbSet<Animal> Animals { get; set; }
     public DbSet<Branch> Branches { get; set; }
-    public DbSet<User> Users { get; set; }
+    // public DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -101,19 +101,7 @@ namespace AnimalShelterApi.Models
           Address = "2990 Andy Devine Ave, Kingman, AZ, 86401"
         }
       );
-      builder.Entity<User>().HasData
-      (
-        new User
-        {
-          Name = "admin",
-          Password = "admin"
-        },
-        new User
-        {
-          Name = "skylan",
-          Password = "skylan"
-        }
-      );
+
     }
   }
 }

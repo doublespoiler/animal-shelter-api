@@ -10,7 +10,7 @@ using AnimalShelterApi.Repository;
 
 namespace AnimalShelterApi.Controllers
 {
-    [Authorize]
+    // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AnimalsController : ControllerBase
@@ -25,7 +25,7 @@ namespace AnimalShelterApi.Controllers
         _db = db;
       }
 
-      [AllowAnonymous]
+      // [AllowAnonymous]
       [HttpPost]
       [Route("authenticate")]
       public IActionResult Authenticate (User user)
@@ -39,7 +39,7 @@ namespace AnimalShelterApi.Controllers
       }
 
       //GET api/animals
-      [AllowAnonymous]
+      // [AllowAnonymous]
       [HttpGet]
       public async Task<ActionResult<IEnumerable<Animal>>> Get(string sex, int? age, string species, string breed, string color, bool? isFixed, string name, int? olderThan, int? youngerThan, int? branchId)
       {
@@ -90,7 +90,7 @@ namespace AnimalShelterApi.Controllers
       }
 
       // GET: api/Animals/5
-      [AllowAnonymous]
+      // [AllowAnonymous]
       [HttpGet("{id}")]
       public async Task<ActionResult<Animal>> GetAnimal(int id)
       {
@@ -103,6 +103,7 @@ namespace AnimalShelterApi.Controllers
       }
 
       // POST api/animals
+      [Authorize]
       [HttpPost]
       public async Task<ActionResult<Animal>> Post(Animal animal)
       {
@@ -112,6 +113,7 @@ namespace AnimalShelterApi.Controllers
       }
 
     // PUT: api/Animals/5
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Animal animal)
     {
@@ -141,6 +143,7 @@ namespace AnimalShelterApi.Controllers
     }
 
     // DELETE: api/Animals/5
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAnimal(int id)
     {

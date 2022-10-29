@@ -18,10 +18,10 @@ namespace AnimalShelterApi.Repository
 			{"admin","admin"},
 		};
 
-		private readonly IConfiguration iconfiguration;
+		private readonly IConfiguration iConfiguration;
 		public JWTManagerRepository(IConfiguration iconfiguration)
 		{
-			this.iconfiguration = iconfiguration;
+			this.iConfiguration = iconfiguration;
 		}
 		public Tokens Authenticate(User user)
 		{
@@ -31,7 +31,7 @@ namespace AnimalShelterApi.Repository
 			}
 			// Else we generate JSON Web Token
 			var tokenHandler = new JwtSecurityTokenHandler();
-			var tokenKey = Encoding.UTF8.GetBytes(iconfiguration["JWT:Key"]);
+			var tokenKey = Encoding.UTF8.GetBytes(iConfiguration["JWT:Key"]);
 			var tokenDescriptor = new SecurityTokenDescriptor
 			{
 				Subject = new ClaimsIdentity(new Claim[]

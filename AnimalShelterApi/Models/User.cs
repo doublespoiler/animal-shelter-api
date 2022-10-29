@@ -4,6 +4,7 @@ namespace AnimalShelterApi.Models
 {
   public class User
   {
+
     [Required]
     public string Name { get; set; }
     

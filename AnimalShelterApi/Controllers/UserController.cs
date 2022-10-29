@@ -7,11 +7,11 @@ using AnimalShelterApi.Repository;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]  
-public class UsersController : ControllerBase
+public class UserController : ControllerBase
 {
 	private readonly IJWTManagerRepository _jWTManager;
 
-	public UsersController(IJWTManagerRepository jWTManager)
+	public UserController(IJWTManagerRepository jWTManager)
 	{
 		this._jWTManager = jWTManager;
 	}
