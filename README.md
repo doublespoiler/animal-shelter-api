@@ -95,6 +95,8 @@ When being created, Animals require their sex, name, species and branch to be in
     - int branchId (search by branch)
 - GET `api/animals/{id}`
   - Gets an animal's information by Id
+- GET `api/animals/random`
+  - Returns the information for a random animal
 - GET `api/branches`
   - Returns all branches
   - Query `api/branches/?name=f&address=flag`
@@ -213,6 +215,7 @@ When being created, Animals require their sex, name, species and branch to be in
 ---
 
 - User logins currently saved as rawtext in JWTManagerRepository.cs
+- Swagger shows GET `api/branches/{id}/animals, despite the route being removed.
 
 ## Tutorials
 
