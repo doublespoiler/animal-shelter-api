@@ -12,10 +12,10 @@ namespace AnimalShelterApi.Repository
 {
 	public class JWTManagerRepository : IJWTManagerRepository
 	{
-
 		Dictionary<string, string> UsersRecords = new Dictionary<string, string>
 		{
 			{"admin","admin"},
+      {"newUser", "newPassword"}
 		};
 
 		private readonly IConfiguration iConfiguration;
@@ -43,7 +43,6 @@ namespace AnimalShelterApi.Repository
 			};
 			var token = tokenHandler.CreateToken(tokenDescriptor);
 			return new Tokens { Token = tokenHandler.WriteToken(token) };
-
 		}
 	}
 }

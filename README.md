@@ -18,6 +18,7 @@ Epicodus Project 12
   - [Swagger](#swagger)
     - [Swagger Authentication](#swagger-authentication)
   - [Known Bugs](#known-bugs)
+  - [Tutorials](#tutorials)
   - [License](#license)
 
 ## Technologies Used
@@ -212,6 +213,13 @@ When being created, Animals require their sex, name, species and branch to be in
 
 - User logins currently saved as rawtext in JWTManagerRepository.cs
 
+## Tutorials
+
+---
+
+- JWT authentication https://codepedia.info/jwt-authentication-in-aspnet-core-web-api-token
+
+- How to add JWT Bearer Token in Swagger https://www.c-sharpcorner.com/article/how-to-add-jwt-bearer-token-authorization-functionality-in-swagger/
 
 ## License
 

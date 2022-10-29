@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,125 +9,117 @@ using AnimalShelterApi.Repository;
 
 namespace AnimalShelterApi.Controllers
 {
-    [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class BranchesController : ControllerBase
+  [ApiController]
+  [Route("api/[controller]")]
+  public class BranchesController : ControllerBase
+  {
+      private readonly AnimalShelterContext _db;
+      private readonly IJWTManagerRepository _jWTManager;
+
+    public BranchesController(IJWTManagerRepository jWTManager, AnimalShelterContext db)
     {
-        private readonly AnimalShelterContext _db;
-        private readonly IJWTManagerRepository _jWTManager;
+      this._jWTManager = jWTManager;
+      _db = db;
+    }
 
-      public BranchesController(IJWTManagerRepository jWTManager, AnimalShelterContext db)
+    [HttpPost]
+    [Route("authenticate")]
+    public IActionResult Authenticate (User userdata)
+    {
+      var token = _jWTManager.Authenticate(userdata);
+      if(token == null)
       {
-        this._jWTManager = jWTManager;
-        _db = db;
+        return Unauthorized();
       }
+      return Ok(token);
+    }
 
-      [AllowAnonymous]
-      [HttpPost]
-      [Route("authenticate")]
-      public IActionResult Authenticate (User userdata)
+    //GET api/branches
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Branch>>> Get(string name, string address)
+    {
+      IQueryable<Branch> query = _db.Branches.AsQueryable();
+
+      if(name != null)
       {
-        var token = _jWTManager.Authenticate(userdata);
-        if(token == null)
-        {
-          return Unauthorized();
-        }
-        return Ok(token);
+        query = query.Where(b => b.Name.ToLower().Contains(name.ToLower()));
       }
-
-      //GET api/branches
-      [AllowAnonymous]
-      [HttpGet]
-      public async Task<ActionResult<IEnumerable<Branch>>> Get(string name, string address)
+      if(address != null)
       {
-        IQueryable<Branch> query = _db.Branches.AsQueryable();
-
-        if(name != null)
-        {
-          query = query.Where(b => b.Name.ToLower().Contains(name.ToLower()));
-        }
-        if(address != null)
-        {
-          query = query.Where(b => b.Address.ToLower().Contains(address.ToLower()));
-        }
-        return await query.ToListAsync();
+        query = query.Where(b => b.Address.ToLower().Contains(address.ToLower()));
       }
+      return await query.ToListAsync();
+    }
 
-      // GET: api/branches/5
-      [AllowAnonymous]
-      [HttpGet("{id}")]
-      public async Task<ActionResult<Branch>> GetBranch(int id)
+    //GET: api/branches/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Branch>> GetBranch(int id)
+    {
+      var branch = await _db.Branches.FindAsync(id);
+      if (branch == null)
       {
-        var branch = await _db.Branches.FindAsync(id);
-        if (branch == null)
-        {
-          return NotFound();
-        }
-        return branch;
+        return NotFound();
       }
+      return branch;
+    }
 
-      //GET api/branches/5/animals
-      [AllowAnonymous]
-      [HttpGet("{id}/animals")]
-      public async Task<ActionResult<IEnumerable<Animal>>> GetBranchAnimals(int id, string sex, int? age, string species, string breed, string color, bool? isFixed, string name, int? olderThan, int? youngerThan)
+    //GET api/branches/5/animals
+    [HttpGet("{id}/animals")]
+    public async Task<ActionResult<IEnumerable<Animal>>> GetBranchAnimals(int id, string sex, string species, string breed, string color, bool? isFixed, string name, int? olderThan, int? youngerThan)
+    {
+      var branch = await _db.Branches.FindAsync(id);
+      if (branch == null)
       {
-        var branch = await _db.Branches.FindAsync(id);
-        if (branch == null)
-        {
-          return NotFound();
-        }
-        IQueryable<Animal> query = _db.Animals.AsQueryable();
-        query = query.Where(a => a.BranchId == id);
-        if(sex != null)
-        {
-          query = query.Where(a => a.Sex == sex);
-        }
-        if(age != null)
-        {
-          query = query.Where(a => a.Age == age);
-        }
-        if(species != null)
-        {
-          query = query.Where(a => a.Species == species);
-        }
-        if(breed != null)
-        {
-          query = query.Where(a => a.Breed == breed);
-        }
-        if(color != null)
-        {
-          query = query.Where(a => a.Color.ToLower().Contains(color.ToLower()));
-        }
-        if(isFixed != null)
-        {
-          query = query.Where(a => a.IsFixed == isFixed);
-        }
-        if(name != null)
-        {
-          query = query.Where(a => a.Name.ToLower().Contains(name.ToLower()));
-        }
-        if(olderThan != null)
-        {
-          query = query.Where(a => a.Age >= olderThan);
-        }
-        if(youngerThan != null)
-        {
-          query = query.Where(a => a.Age <= youngerThan);
-        }
-        return await query.ToListAsync();
+        return NotFound();
       }
+      IQueryable<Animal> query = _db.Animals.AsQueryable();
+      query = query.Where(a => a.BranchId == id);
+      if(sex != null)
+      {
+        query = query.Where(a => a.Sex.ToLower().Contains(sex.ToLower()));
+      }
+      if(species != null)
+      {
+        query = query.Where(a => a.Species.ToLower().Contains(species.ToLower()));
+      }
+      if(breed != null)
+      {
+        query = query.Where(a => a.Breed.ToLower().Contains(breed.ToLower()));
+      }
+      if(color != null)
+      {
+        query = query.Where(a => a.Color.ToLower().Contains(color.ToLower()));
+      }
+      if(isFixed != null)
+      {
+        query = query.Where(a => a.IsFixed == isFixed);
+      }
+      if(name != null)
+      {
+        query = query.Where(a => a.Name.ToLower().Contains(name.ToLower()));
+      }
+      if(olderThan != null)
+      {
+        query = query.Where(a => a.Age >= olderThan);
+      }
+      if(youngerThan != null)
+      {
+        query = query.Where(a => a.Age <= youngerThan);
+      }
+      return await query.ToListAsync();
+    }
 
-      // POST api/branches
-      [HttpPost]
-      public async Task<ActionResult<Branch>> Post(Branch branch)
-      {
-        _db.Branches.Add(branch);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction("Post", new { id = branch.Id }, branch);
-      }
-      [HttpPost("{id}/animals")]
-      public async Task<ActionResult<Animal>> PostAnimal(int id, Animal animal)
+    //POST api/branches
+    [Authorize]
+    [HttpPost]
+    public async Task<ActionResult<Branch>> Post(Branch branch)
+    {
+      _db.Branches.Add(branch);
+      await _db.SaveChangesAsync();
+      return CreatedAtAction("Post", new { id = branch.Id }, branch);
+    }
+    [HttpPost("{id}/animals")]
+    public async Task<ActionResult<Animal>> PostAnimal(int id, Animal animal)
       {
         animal.BranchId = id;
         _db.Animals.Add(animal);
@@ -136,7 +127,8 @@ namespace AnimalShelterApi.Controllers
         return CreatedAtAction("PostAnimal", new { id = animal.Id}, animal);
       }
 
-    // PUT: api/branches/5
+    //PUT: api/branches/5
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Branch branch)
     {
@@ -165,7 +157,8 @@ namespace AnimalShelterApi.Controllers
       return NoContent();
     }
 
-    // DELETE: api/branches/5
+    //DELETE: api/branches/5
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteBranch(int id)
     {

@@ -16,17 +16,20 @@ public class UserController : ControllerBase
 		this._jWTManager = jWTManager;
 	}
 
+  //GET api/users
 	[HttpGet]
 	public List<string> Get()
 	{
 		var users = new List<string>
 		{
 			"admin",
+      "newUser"
 		};
 
 		return users;
 	}
 
+  //POST api/user/authenticate
 	[AllowAnonymous]
 	[HttpPost]
 	[Route("authenticate")]

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,11 +6,8 @@ namespace AnimalShelterApi.Models
   public class Animal
   {
 
-    public Animal()
-    {
+    public Animal() { }
 
-    }
-    
     public int Id { get; set; }
     [Required]
     public string Sex { get; set; }
@@ -30,6 +23,5 @@ namespace AnimalShelterApi.Models
     public int BranchId { get; set; }
     [JsonIgnore]
     public virtual Branch branch { get; set; }
-
   }
 }

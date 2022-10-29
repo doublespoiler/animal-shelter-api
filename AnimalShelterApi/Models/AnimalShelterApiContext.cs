@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace AnimalShelterApi.Models
@@ -14,7 +10,6 @@ namespace AnimalShelterApi.Models
 
     public DbSet<Animal> Animals { get; set; }
     public DbSet<Branch> Branches { get; set; }
-    // public DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -82,6 +77,18 @@ namespace AnimalShelterApi.Models
           Species = "feline",
           Breed = "mixed",
           Color = "tabby",
+          IsFixed = true,
+          BranchId = 1
+        },
+        new Animal
+        {
+          Id = 6,
+          Sex = "male",
+          Name = "Bond Forger", 
+          Age = 6,
+          Species = "canine",
+          Breed = "great pyrenees",
+          Color = "white",
           IsFixed = true,
           BranchId = 1
         }

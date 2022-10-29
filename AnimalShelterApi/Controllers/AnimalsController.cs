@@ -10,109 +10,101 @@ using AnimalShelterApi.Repository;
 
 namespace AnimalShelterApi.Controllers
 {
-    // [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AnimalsController : ControllerBase
+  [ApiController]
+  [Route("api/[controller]")]
+  public class AnimalsController : ControllerBase
+  {
+    private readonly AnimalShelterContext _db;
+    private readonly IJWTManagerRepository _jWTManager;
+    
+    public AnimalsController(IJWTManagerRepository jWTManager, AnimalShelterContext db)
     {
-      private readonly AnimalShelterContext _db;
-      private readonly IJWTManagerRepository _jWTManager;
-      
+      this._jWTManager = jWTManager;
+      _db = db;
+    }
 
-      public AnimalsController(IJWTManagerRepository jWTManager, AnimalShelterContext db)
+    //POST: api/animals/authenticate
+    [HttpPost]
+    [Route("authenticate")]
+    public IActionResult Authenticate (User user)
+    {
+      var token = _jWTManager.Authenticate(user);
+      if(token == null)
       {
-        this._jWTManager = jWTManager;
-        _db = db;
+        return Unauthorized();
+      }
+      return Ok(token);
+    }
+
+    //GET api/animals
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Animal>>> Get(string sex, string species, string breed, string color, bool? isFixed, string name, int? olderThan, int? youngerThan, int? branchId)
+    {
+      IQueryable<Animal> query = _db.Animals.AsQueryable();
+
+      if(sex != null)
+      {
+        query = query.Where(a => a.Sex.ToLower() == sex.ToLower());
+      }
+      if(species != null)
+      {
+        query = query.Where(a => a.Species.ToLower().Contains(species.ToLower()));
+      }
+      if(breed != null)
+      {
+        query = query.Where(a => a.Breed.ToLower().Contains(breed.ToLower()));
+      }
+      if(color != null)
+      {
+        query = query.Where(a => a.Color.ToLower().Contains(color.ToLower()));
+      }
+      if(isFixed != null)
+      {
+        query = query.Where(a => a.IsFixed == isFixed);
+      }
+      if(name != null)
+      {
+        query = query.Where(a => a.Name.ToLower().Contains(name.ToLower()));
+      }
+      if(olderThan != null)
+      {
+        query = query.Where(a => a.Age >= olderThan);
+      }
+      if(youngerThan != null)
+      {
+        query = query.Where(a => a.Age <= youngerThan);
+      }
+      if(branchId != null)
+      {
+        query = query.Where(a => a.BranchId == branchId);
       }
 
-      // [AllowAnonymous]
-      [HttpPost]
-      [Route("authenticate")]
-      public IActionResult Authenticate (User user)
+      return await query.ToListAsync();
+    }
+
+    //GET: api/Animals/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Animal>> GetAnimal(int id)
+    {
+      var animal = await _db.Animals.FindAsync(id);
+      if (animal == null)
       {
-        var token = _jWTManager.Authenticate(user);
-        if(token == null)
-        {
-          return Unauthorized();
-        }
-        return Ok(token);
+        return NotFound();
       }
+      return animal;
+    }
 
-      //GET api/animals
-      // [AllowAnonymous]
-      [HttpGet]
-      public async Task<ActionResult<IEnumerable<Animal>>> Get(string sex, int? age, string species, string breed, string color, bool? isFixed, string name, int? olderThan, int? youngerThan, int? branchId)
-      {
-        IQueryable<Animal> query = _db.Animals.AsQueryable();
+    //POST api/animals
+    [Authorize]
+    [HttpPost]
+    public async Task<ActionResult<Animal>> Post(Animal animal)
+    {
+      _db.Animals.Add(animal);
+      await _db.SaveChangesAsync();
+      return CreatedAtAction("Post", new { id = animal.Id }, animal);
+    }
 
-        if(sex != null)
-        {
-          query = query.Where(a => a.Sex == sex);
-        }
-        if(age != null)
-        {
-          query = query.Where(a => a.Age == age);
-        }
-        if(species != null)
-        {
-          query = query.Where(a => a.Species == species);
-        }
-        if(breed != null)
-        {
-          query = query.Where(a => a.Breed == breed);
-        }
-        if(color != null)
-        {
-          query = query.Where(a => a.Color.ToLower().Contains(color.ToLower()));
-        }
-        if(isFixed != null)
-        {
-          query = query.Where(a => a.IsFixed == isFixed);
-        }
-        if(name != null)
-        {
-          query = query.Where(a => a.Name.ToLower().Contains(name.ToLower()));
-        }
-        if(olderThan != null)
-        {
-          query = query.Where(a => a.Age >= olderThan);
-        }
-        if(youngerThan != null)
-        {
-          query = query.Where(a => a.Age <= youngerThan);
-        }
-        if(branchId != null)
-        {
-          query = query.Where(a => a.BranchId == branchId);
-        }
-
-        return await query.ToListAsync();
-      }
-
-      // GET: api/Animals/5
-      // [AllowAnonymous]
-      [HttpGet("{id}")]
-      public async Task<ActionResult<Animal>> GetAnimal(int id)
-      {
-        var animal = await _db.Animals.FindAsync(id);
-        if (animal == null)
-        {
-          return NotFound();
-        }
-        return animal;
-      }
-
-      // POST api/animals
-      [Authorize]
-      [HttpPost]
-      public async Task<ActionResult<Animal>> Post(Animal animal)
-      {
-        _db.Animals.Add(animal);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction("Post", new { id = animal.Id }, animal);
-      }
-
-    // PUT: api/Animals/5
+    //PUT: api/Animals/5
     [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Animal animal)
@@ -142,7 +134,7 @@ namespace AnimalShelterApi.Controllers
       return NoContent();
     }
 
-    // DELETE: api/Animals/5
+    //DELETE: api/Animals/5
     [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAnimal(int id)
