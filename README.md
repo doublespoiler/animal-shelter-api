@@ -31,7 +31,6 @@ Epicodus Project 12
 - Swagger
 - Identity
 - JWT
-- Best Background Noise: https://saltybet.com 
 
 ## Description
 
@@ -216,6 +215,7 @@ When being created, Animals require their sex, name, species and branch to be in
 
 - User logins currently saved as rawtext in JWTManagerRepository.cs
 - Swagger shows GET `api/branches/{id}/animals, despite the route being removed.
+- I lost 900k on Salty, back to the [Salt Mines](http://saltybet.com) for me. This is definitely a bug.
 
 ## Tutorials
 
@@ -232,3 +232,5 @@ When being created, Animals require their sex, name, species and branch to be in
 [MIT](https://choosealicense.com/licenses/mit/) https://choosealicense.com/licenses/mit/
 
 Copyright (c) 2022 Skylan Lew
+
+
