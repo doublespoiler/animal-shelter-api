@@ -31,6 +31,7 @@ Epicodus Project 12
 - Swagger
 - Identity
 - JWT
+- Best Background Noise: https://saltybet.com 
 
 ## Description
 
@@ -84,11 +85,11 @@ When being created, Animals require their sex, name, species and branch to be in
   - Returns all animals
   - Query `api/animals/?name=Titan&color=wh`
     - string sex (male or female)
-    - string species? (feline, canine, etc.)
-    - string breed? (pit bull, shorthair, etc.)
-    - string color? (red, white, wh, etc.)
+    - string species`?` (feline, canine, etc.)
+    - string breed`? `(pit bull, shorthair, etc.)
+    - string color`?` (red, white, wh, etc.)
     - bool isFixed (true, false)
-    - string name?
+    - string name`?`
     - int olderThan
     - int youngerThan
     - int branchId (search by branch)
@@ -97,8 +98,8 @@ When being created, Animals require their sex, name, species and branch to be in
 - GET `api/branches`
   - Returns all branches
   - Query `api/branches/?name=f&address=flag`
-    - string name?
-    - string address?
+    - string name`?`
+    - string address`?`
 - GET `api/branches/{id}`
   - Get's a branches' information by Id
 - GET `api/branches/{id}/animals`
