@@ -46,13 +46,27 @@ When being created, Animals require their sex, name, species and branch to be in
 
 ---
 
-- Create a file named `appsettings.json` in the project folder `/CandyShop/`
+- Create a file named `appsettings.json` in the project folder `/AnimalShelterApi/`
 - Put the following code inside `appsettings.json`, making sure to set your uid and pwd:
+- The JWT key,  issuer, and audience do not matter if you are hosting locally.
 
 ```json
 {
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "System": "Information",
+      "Microsoft": "Information"
+    }
+  },
+  "AllowedHosts": "*",
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Port=3306;database=candyshop;uid=YOURUSERNAME;pwd=YOURPASSWORD;"
+    "DefaultConnection": "Server=localhost;Port=3306;database=animal_shelter_api;uid=[YOUR USERNAME HERE];pwd=[YOUR PASSWORD HERE];"
+  },
+  "JWT": {
+    "Key": "SUPER SECRET JWT KEY",
+    "Issuer": "me", 
+    "Audience": "me"
   }
 }
 ```
